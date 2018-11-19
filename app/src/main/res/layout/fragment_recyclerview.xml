@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="viewModel"
+            type="com.mobileChallenge.viewModel.RViewModel" />
+    </data>
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="@{viewModel.showRecyclerView}"
+            app:setAdapter="@{viewModel.getAdapter()}"/>
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:id="@+id/spinnerLoading"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="@{viewModel.showLoading}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/no_data"
+            android:textSize="24sp"
+            android:visibility="@{viewModel.showEmptyTextView}" />
+    </FrameLayout>
+</layout>

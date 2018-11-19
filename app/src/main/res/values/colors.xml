@@ -5,4 +5,5 @@
     <color name="colorAccent">#0F76FD</color>
     <color name="selected_color">#0F76FD</color>
     <color name="unselected_color">#8D8D92</color>
+    <color name="cardView_shadow_color">#EDEDED</color>
 </resources>

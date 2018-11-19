@@ -1,18 +1,22 @@
 package com.mobileChallenge.ui.fragment;
 
-import androidx.databinding.DataBindingUtil;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.mobileChallenge.R;
-import com.mobileChallenge.databinding.FragmentOneBinding;
+import com.mobileChallenge.databinding.FragmentSettingsBinding;
 
-public class FragmentOne extends Fragment {
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 
-    public FragmentOne() {
+/**
+ * Not Implemented
+ */
+public class SettingsFragment extends Fragment {
+
+    public SettingsFragment() {
         // Required empty public constructor
     }
 
@@ -24,7 +28,7 @@ public class FragmentOne extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        FragmentOneBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_one,container,false);
+        FragmentSettingsBinding binding = DataBindingUtil.inflate(inflater,R.layout.fragment_settings,container,false);
         return binding.getRoot();
     }
 
