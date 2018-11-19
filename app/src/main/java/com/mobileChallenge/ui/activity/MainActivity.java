@@ -14,6 +14,8 @@ import com.mobileChallenge.ui.fragment.RecyclerViewFragment;
 import com.mobileChallenge.ui.fragment.SettingsFragment;
 import com.mobileChallenge.ui.observer.MainActivityObserver;
 
+import java.util.Objects;
+
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -33,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(binding);
 
         setupTabIcons(binding.tabLayout);
-        getLifecycle().addObserver(new MainActivityObserver());
+        getLifecycle().addObserver(new MainActivityObserver(this));
     }
 
     /**
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         textView.setText(title);
         textView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         textView.setGravity(Gravity.CENTER_HORIZONTAL);
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(textView);
     }
 
@@ -67,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
      * @param tabLayout change TabLayout's icon
      */
     private void setupTabIcons(TabLayout tabLayout) {
-        tabLayout.getTabAt(0).setIcon(R.mipmap.star);
-        tabLayout.getTabAt(1).setIcon(R.mipmap.settings);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.mipmap.star);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.mipmap.settings);
     }
 
 }

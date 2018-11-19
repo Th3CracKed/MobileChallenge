@@ -15,6 +15,7 @@ public class Owner {
     private String login;
     private String avatar_url;
 
+    //TODO Remove this when using GSONCONVERTER (Not Necessary)
     public Owner(String login, String avatar_url) {
         this.login = login;
         this.avatar_url = avatar_url;
@@ -28,7 +29,7 @@ public class Owner {
         return avatar_url;
     }
 
-    /**
+    /** TODO fix Memory leak when turning the screen :  A solution will be to use getApplicationContext() but it's not recommended i think
      * used by data binding library to fetch image
      * @param imageView the imageView that will be be binded
      * @param imageUrl the url to fetch
@@ -41,7 +42,7 @@ public class Owner {
             if (imageView.getTag(R.id.avatarImage) == null || !imageView.getTag(R.id.avatarImage).equals(imageUrl)) {
                 imageView.setImageBitmap(null);
                 imageView.setTag(R.id.avatarImage, imageUrl);
-                Glide.with(imageView).load(imageUrl).into(imageView);
+                Glide.with(imageView.getContext()).load(imageUrl).into(imageView);
             }
         } else {
             imageView.setTag(R.id.avatarImage, null);

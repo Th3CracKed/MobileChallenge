@@ -3,7 +3,6 @@ package com.mobileChallenge.ui.adapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.mobileChallenge.R;
@@ -52,13 +51,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
         viewHolder.binding.setItem(items.get(position));//TODO i think i can do it through xml
 
-        viewHolder.binding.getRoot().setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(items.get(position).getHtml_url()));
-                viewHolder.binding.getRoot().getContext().startActivity(intent);
-            }
+        viewHolder.binding.getRoot().setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(items.get(position).getHtml_url()));
+            viewHolder.binding.getRoot().getContext().startActivity(intent);
         });
     }
 
