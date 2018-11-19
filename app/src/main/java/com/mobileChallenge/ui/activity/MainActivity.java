@@ -12,6 +12,7 @@ import com.mobileChallenge.databinding.ActivityMainBinding;
 import com.mobileChallenge.ui.adapter.ViewPagerAdapter;
 import com.mobileChallenge.ui.fragment.RecyclerViewFragment;
 import com.mobileChallenge.ui.fragment.SettingsFragment;
+import com.mobileChallenge.ui.observer.MainActivityObserver;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setupViewPager(binding);
 
         setupTabIcons(binding.tabLayout);
+        getLifecycle().addObserver(new MainActivityObserver());
     }
 
     /**
