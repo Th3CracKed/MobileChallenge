@@ -7,15 +7,12 @@ import android.view.ViewGroup;
 
 import com.mobileChallenge.R;
 import com.mobileChallenge.databinding.FragmentRecyclerviewBinding;
-import com.mobileChallenge.model.Item;
+import com.mobileChallenge.ui.observer.RFragmentObserver;
 import com.mobileChallenge.viewModel.RViewModel;
-
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,7 +28,10 @@ public class RecyclerViewFragment extends Fragment {
     private RecyclerView mRecyclerView;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) { super.onCreate(savedInstanceState); }
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getLifecycle().addObserver(new RFragmentObserver(getActivity()));
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -52,15 +52,12 @@ public class RecyclerViewFragment extends Fragment {
 
 
     private void setupListUpdate(final RViewModel rViewModel) {
-        rViewModel.getMutableLiveData().observe(this, new Observer<List<Item>>() {
-            @Override
-            public void onChanged(List<Item> items) {
-                if(items.size() == 0){
-                    rViewModel.getShowLoading().set(View.GONE);
-                    rViewModel.getShowEmptyTextView().set(View.VISIBLE);
-                }else{
-                    rViewModel.setListInAdapter(items);
-                }
+        rViewModel.getMutableLiveData().observe(this, items -> {
+            if(items.size() == 0){
+                rViewModel.getShowLoading().set(View.GONE);
+                rViewModel.getShowEmptyTextView().set(View.VISIBLE);
+            }else{
+                rViewModel.setListInAdapter(items);
             }
         });
     }

@@ -15,12 +15,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivityObserver implements LifecycleObserver {
+public class RFragmentObserver implements LifecycleObserver {
     private Disposable internetDisposable;
     private int requestedPage = 1;//counter
     private Boolean isRequested = true;//to queue user request when connection is down
     private Context context;
-    public MainActivityObserver(Context mContext) {
+    public RFragmentObserver(Context mContext) {
         context = mContext;
     }
 
@@ -59,7 +59,7 @@ public class MainActivityObserver implements LifecycleObserver {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isConnected ->{
-                    Log.d("MainActivityObserver","onInternetAvailabilityChange = "+isConnected);
+                    Log.d("RFragmentObserver","onInternetAvailabilityChange = "+isConnected);
                     if (isConnected && isRequested) {
                         requestData();
                     }
