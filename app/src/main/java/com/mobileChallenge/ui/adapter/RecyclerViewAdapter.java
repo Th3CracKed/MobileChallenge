@@ -49,7 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     // Replace the contents of a view
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        viewHolder.binding.setItem(items.get(position));//TODO i think i can do it through xml
+        viewHolder.binding.setItem(items.get(position));
 
         viewHolder.binding.getRoot().setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
