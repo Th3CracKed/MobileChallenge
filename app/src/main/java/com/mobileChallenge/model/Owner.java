@@ -15,12 +15,6 @@ public class Owner {
     private String login;
     private String avatar_url;
 
-    //TODO Remove this when using GSONCONVERTER (Not Necessary)
-    public Owner(String login, String avatar_url) {
-        this.login = login;
-        this.avatar_url = avatar_url;
-    }
-
     public String getLogin() {
         return login;
     }

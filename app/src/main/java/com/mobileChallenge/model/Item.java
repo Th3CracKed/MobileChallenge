@@ -11,15 +11,6 @@ public class Item {
     private Owner owner;
     private String html_url;
 
-    //TODO Remove this when using GSONCONVERTER (Not Necessary)
-    public Item(String name, String description, String watchers, Owner owner, String html_url) {
-        this.name = name;
-        this.description = description;
-        this.watchers = watchers;
-        this.owner = owner;
-        this.html_url = html_url;
-    }
-
     public String getName() {
         return name;
     }
