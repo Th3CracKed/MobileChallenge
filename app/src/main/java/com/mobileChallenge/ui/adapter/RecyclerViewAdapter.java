@@ -3,7 +3,6 @@ package com.mobileChallenge.ui.adapter;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.mobileChallenge.R;

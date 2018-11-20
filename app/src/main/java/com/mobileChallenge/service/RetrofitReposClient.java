@@ -17,7 +17,6 @@ import io.reactivex.schedulers.Schedulers;
 public class RetrofitReposClient {
     private static RetrofitReposClient ourInstance;
     private static API api;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private RetrofitReposClient(){}
 
@@ -34,11 +33,10 @@ public class RetrofitReposClient {
 
     /**
      *  fetch Requested data
-     * @param requestedPage the page that user requested
      * @param retrofitAction An abstract class that define the behaviour on Success and on fail of Retrofit fetch
      */
-    public void fetchData(int requestedPage,RetrofitAction retrofitAction){
-        compositeDisposable.add(api.getRepositories(getParams(requestedPage))
+    public void fetchData(RetrofitAction retrofitAction,CompositeDisposable compositeDisposable){
+        compositeDisposable.add(api.getRepositories(getParams(retrofitAction.getRequestedPage()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(retrofitAction::onSuccess, throwable -> retrofitAction.onFailure()));
