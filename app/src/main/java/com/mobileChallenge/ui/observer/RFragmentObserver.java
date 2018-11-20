@@ -1,36 +1,78 @@
 package com.mobileChallenge.ui.observer;
 
-import android.content.Context;
 import android.util.Log;
+import android.view.View;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+import com.mobileChallenge.databinding.FragmentRecyclerviewBinding;
 import com.mobileChallenge.model.RepositoriesModel;
 import com.mobileChallenge.service.RetrofitAction;
 import com.mobileChallenge.service.RetrofitReposClient;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class RFragmentObserver implements LifecycleObserver {
+
     private Disposable internetDisposable;
     private int requestedPage = 1;//counter
     private Boolean isRequested = true;//to queue user request when connection is down
-    private Context context;
-    public RFragmentObserver(Context mContext) {
-        context = mContext;
+    private FragmentRecyclerviewBinding binding;
+    private LifecycleOwner viewLifecycleOwner;
+
+    public RFragmentObserver(FragmentRecyclerviewBinding mBinding, LifecycleOwner mViewLifecycleOwner) {
+        binding = mBinding;
+        viewLifecycleOwner = mViewLifecycleOwner;
+    }
+
+    /**
+     * observe LiveData change and update UI according to it
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void setupListUpdate() {
+        binding.getViewModel().getMutableLiveData().observe(viewLifecycleOwner, items -> {
+            if(items.size() == 0){
+                binding.getViewModel().getShowLoading().set(View.GONE);
+                binding.getViewModel().getShowEmptyTextView().set(View.VISIBLE);
+            }else{
+                binding.getViewModel().setListInAdapter(items);
+            }
+        });
+    }
+
+    /**
+     * Set RecyclerView's LayoutManager and scroll to saved position
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void setRecyclerViewLayoutManager() {
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(binding.getRoot().getContext());
+        binding.recyclerView.setLayoutManager(mLayoutManager);
+
+        int scrollPosition = 0;
+
+        // If a layout manager has already been set, get current scroll position.
+        if (binding.recyclerView.getLayoutManager() != null) {
+            scrollPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager())
+                    .findFirstCompletelyVisibleItemPosition();
+        }
+
+        binding.recyclerView.scrollToPosition(scrollPosition);
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    public void onResume() {
+    private void onResume() {
         onInternetAvailabilityChange();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    public void onPause(){
+    private void onPause(){
         safelyDispose(internetDisposable);
     }
 
