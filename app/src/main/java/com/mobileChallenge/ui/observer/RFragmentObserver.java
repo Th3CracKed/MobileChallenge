@@ -1,7 +1,5 @@
 package com.mobileChallenge.ui.observer;
 
-import android.view.View;
-
 import com.mobileChallenge.databinding.FragmentRecyclerviewBinding;
 
 import androidx.lifecycle.Lifecycle;
@@ -27,9 +25,8 @@ public class RFragmentObserver implements LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     private void setupListUpdate() {
         binding.getViewModel().getMutableLiveData().observe(viewLifecycleOwner, items -> {
-            if(items.size() == 0){
-                binding.getViewModel().getShowLoading().set(View.GONE);
-                binding.getViewModel().getShowEmptyTextView().set(View.VISIBLE);
+            if(items == null || items.size() == 0){
+                binding.getViewModel().showEmptyText();
             }else{
                 binding.getViewModel().setListInAdapter(items);
             }

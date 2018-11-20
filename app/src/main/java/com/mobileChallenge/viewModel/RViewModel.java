@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.mobileChallenge.model.Item;
-import com.mobileChallenge.model.Owner;
 import com.mobileChallenge.model.RepositoriesModel;
 import com.mobileChallenge.service.RetrofitAction;
 import com.mobileChallenge.service.RetrofitReposClient;
@@ -47,7 +46,6 @@ public class RViewModel extends ViewModel {
     public LiveData<List<Item>> getMutableLiveData() {
         if (mutableLiveData == null) {
             mutableLiveData = new MutableLiveData<>();
-            loadData();
         }
         return mutableLiveData;
     }
@@ -68,10 +66,23 @@ public class RViewModel extends ViewModel {
         return adapter;
     }
 
+    /**
+     * populate Recycler view with list items, and update ui
+     * @param items to populate RecyclerView
+     */
     public void setListInAdapter(List <Item> items){
         adapter.setItems(items);
         showLoading.set(View.GONE);
         showRecyclerView.set(View.VISIBLE);
+    }
+
+    /**
+     * Show message to user when no data is available
+     */
+    public void showEmptyText() {
+        showLoading.set(View.GONE);
+        showRecyclerView.set(View.GONE);
+        showEmptyTextView.set(View.VISIBLE);
     }
 
     /*
@@ -82,17 +93,6 @@ public class RViewModel extends ViewModel {
         showRecyclerView = new ObservableInt(View.GONE);
         showLoading = new ObservableInt(View.VISIBLE);
         showEmptyTextView = new ObservableInt(View.GONE);
-    }
-
-    private void loadData() {
-        //TODO when Retrofit is implemented replace all bellow lines throw interface
-        Owner owner = new Owner("GoogleChromeLabs", "https://avatars1.githubusercontent.com/u/43830688?v=4");
-        Item item = new Item("bert", "TensorFlow code and pre-trained models for BERT", "7487",owner, "https://github.com/google-research/bert");
-        List<Item> items = new ArrayList<>();
-        for(int i = 0; i < 8 ;i++){
-                items.add(item);
-        }
-        mutableLiveData.setValue(items);//add 8 elements with same content
     }
 
     /**
@@ -146,16 +146,15 @@ public class RViewModel extends ViewModel {
             public void onSuccess(RepositoriesModel repositoriesModel) {
                 super.onSuccess(repositoriesModel);
                 isRequested = false;//request delivered
-                //TODO change UI
+                mutableLiveData.setValue(repositoriesModel.getItems());
             }
 
             @Override
             public void onFailure() {
                 super.onFailure();
                 isRequested = true; //queue a request that will be launched when internet is available again
-                //TODO change UI
+                mutableLiveData.setValue(new ArrayList<>());
             }
         },compositeDisposable);
     }
-
 }
