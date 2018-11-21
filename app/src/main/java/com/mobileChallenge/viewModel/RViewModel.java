@@ -1,5 +1,6 @@
 package com.mobileChallenge.viewModel;
 
+import android.app.Application;
 import android.util.Log;
 import android.view.View;
 
@@ -10,12 +11,14 @@ import com.mobileChallenge.service.RetrofitAction;
 import com.mobileChallenge.service.RetrofitReposClient;
 import com.mobileChallenge.ui.adapter.RecyclerViewAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.ObservableInt;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -26,9 +29,9 @@ import io.reactivex.schedulers.Schedulers;
  * Store and manage UI-related data in a lifecycle conscious way.
  * The ViewModel class allows data to survive configuration changes such as screen rotations.
  */
-public class RViewModel extends ViewModel {
+public class RViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Item>> mutableLiveData;
+    private MutableLiveData<List<ItemViewModel>> mutableLiveData;
     private RecyclerViewAdapter adapter;
     private ObservableInt recyclerViewVisibility;
     private ObservableInt loadingVisibility;
@@ -36,13 +39,16 @@ public class RViewModel extends ViewModel {
     private Disposable internetDisposable;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Boolean isRequested = true;//to queue user request when connection is down
+    private Application application;
 
-    public RViewModel() {
-        super();
+    public RViewModel(@NonNull Application mApplication) {
+        super(mApplication);
+        application = mApplication;
         init();
     }
 
-    public LiveData<List<Item>> getMutableLiveData() {
+
+    public LiveData<List<ItemViewModel>> getMutableLiveData() {
         if (mutableLiveData == null) {
             mutableLiveData = new MutableLiveData<>();
         }
@@ -69,7 +75,7 @@ public class RViewModel extends ViewModel {
      * populate Recycler view with list items, and update ui
      * @param items to populate RecyclerView
      */
-    public void setListInAdapter(List <Item> items){
+    public void setListInAdapter(List <ItemViewModel> items){
         adapter.setItems(items);
         loadingVisibility.set(View.GONE);
         recyclerViewVisibility.set(View.VISIBLE);
@@ -148,7 +154,13 @@ public class RViewModel extends ViewModel {
             public void onSuccess(RepositoriesModel repositoriesModel) {
                 super.onSuccess(repositoriesModel);
                 isRequested = false;//request delivered
-                mutableLiveData.setValue(repositoriesModel.getItems());
+                List <ItemViewModel> itemViewModels = new ArrayList<>();
+                for(Item item : repositoriesModel.getItems()){
+                    ItemViewModel itemViewModel = new ItemViewModel(application);
+                    itemViewModel.setItem(item);
+                    itemViewModels.add(itemViewModel);
+                }
+                mutableLiveData.setValue(itemViewModels);
             }
 
             @Override
