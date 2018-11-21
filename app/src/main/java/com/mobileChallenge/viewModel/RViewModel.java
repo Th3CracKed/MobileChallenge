@@ -10,7 +10,6 @@ import com.mobileChallenge.service.RetrofitAction;
 import com.mobileChallenge.service.RetrofitReposClient;
 import com.mobileChallenge.ui.adapter.RecyclerViewAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import androidx.databinding.ObservableInt;
@@ -31,9 +30,9 @@ public class RViewModel extends ViewModel {
 
     private MutableLiveData<List<Item>> mutableLiveData;
     private RecyclerViewAdapter adapter;
-    private ObservableInt showRecyclerView;
-    private ObservableInt showLoading;
-    private ObservableInt showEmptyTextView;
+    private ObservableInt recyclerViewVisibility;
+    private ObservableInt loadingVisibility;
+    private ObservableInt emptyTextViewVisibility;
     private Disposable internetDisposable;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Boolean isRequested = true;//to queue user request when connection is down
@@ -50,16 +49,16 @@ public class RViewModel extends ViewModel {
         return mutableLiveData;
     }
 
-    public ObservableInt getShowRecyclerView() {
-        return showRecyclerView;
+    public ObservableInt getRecyclerViewVisibility() {
+        return recyclerViewVisibility;
     }
 
-    public ObservableInt getShowLoading() {
-        return showLoading;
+    public ObservableInt getLoadingVisibility() {
+        return loadingVisibility;
     }
 
-    public ObservableInt getShowEmptyTextView() {
-        return showEmptyTextView;
+    public ObservableInt getEmptyTextViewVisibility() {
+        return emptyTextViewVisibility;
     }
 
     public RecyclerViewAdapter getAdapter() {
@@ -72,27 +71,27 @@ public class RViewModel extends ViewModel {
      */
     public void setListInAdapter(List <Item> items){
         adapter.setItems(items);
-        showLoading.set(View.GONE);
-        showRecyclerView.set(View.VISIBLE);
+        loadingVisibility.set(View.GONE);
+        recyclerViewVisibility.set(View.VISIBLE);
     }
 
     /**
      * Show message to user when no data is available
      */
     public void showEmptyText() {
-        showLoading.set(View.GONE);
-        showRecyclerView.set(View.GONE);
-        showEmptyTextView.set(View.VISIBLE);
+        loadingVisibility.set(View.GONE);
+        recyclerViewVisibility.set(View.GONE);
+        emptyTextViewVisibility.set(View.VISIBLE);
     }
 
     /*
-    * Init binding layout
+     * Init binding layout
      */
     private void init(){
         adapter = new RecyclerViewAdapter();
-        showRecyclerView = new ObservableInt(View.GONE);
-        showLoading = new ObservableInt(View.VISIBLE);
-        showEmptyTextView = new ObservableInt(View.GONE);
+        recyclerViewVisibility = new ObservableInt(View.GONE);
+        loadingVisibility = new ObservableInt(View.VISIBLE);
+        emptyTextViewVisibility = new ObservableInt(View.GONE);
     }
 
     /**
@@ -100,7 +99,7 @@ public class RViewModel extends ViewModel {
      * Listen to internet connectivity every 2 seconds (default), different from listening to network connectivity
      * Customization is possible with InternetObservingSetting
      * @see <a href="https://github.com/pwittchen/ReactiveNetwork#checking-internet-connectivity-once">ReactiveNetwork guide</a>
-     * when the device is connected and request is queued, try to fetch Data using Retrofit
+     * when the device is connected and a request is queued, try to fetch Data using Retrofit
      */
     public void onInternetAvailabilityChange() {
         internetDisposable = ReactiveNetwork
@@ -138,7 +137,7 @@ public class RViewModel extends ViewModel {
      * Request data from RetrofitReposClient
      * update UI onSuccess and onFailure
      * onSuccess increment requested page, and dispose request
-     * onFailure que request page
+     * onFailure queue request page
      */
     private void requestData() {
         RetrofitReposClient.getInstance().fetchData(new RetrofitAction() {
@@ -153,7 +152,6 @@ public class RViewModel extends ViewModel {
             public void onFailure() {
                 super.onFailure();
                 isRequested = true; //queue a request that will be launched when internet is available again
-                mutableLiveData.setValue(new ArrayList<>());
             }
         },compositeDisposable);
     }
