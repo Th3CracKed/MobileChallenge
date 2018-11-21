@@ -73,6 +73,7 @@ public class RViewModel extends ViewModel {
         adapter.setItems(items);
         loadingVisibility.set(View.GONE);
         recyclerViewVisibility.set(View.VISIBLE);
+        emptyTextViewVisibility.set(View.GONE);
     }
 
     /**
@@ -110,6 +111,8 @@ public class RViewModel extends ViewModel {
                     Log.d("RFragmentObserver","onInternetAvailabilityChange = "+isConnected);
                     if (isConnected && isRequested) {
                         requestData();
+                    }else if (!isConnected && (mutableLiveData.getValue()==null || mutableLiveData.getValue().isEmpty() )){//Internet is not available and list is empty
+                        showEmptyText();
                     }
                 });
     }
