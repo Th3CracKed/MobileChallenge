@@ -1,3 +1,5 @@
+
+
 # HiddenFounders Mobile Challenge
 Android application that lists the most starred Github repos that were created in last 30 days, using Retrofit2 with MVVM architecture more details at [implementation section](#implementation).
 ## Features
@@ -9,11 +11,13 @@ Android application that lists the most starred Github repos that were created i
   * Numbers of stars for the repo. 
   * Username and avatar of the owner. 
   * [BONUS] As a User I should be able to keep scrolling and new results should appear (pagination).
+  * **Currently Pagination is not implemented, to implement the logic of it, i started with pull to refresh (because time constraint)**
+  * **Internet checking : if there no Internet Available, queue a request that will be treated when internet is available**
 
-## Screenshot (TODO)
-
+## Screenshot 
+![Main Fragment](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot1.png)![enter image description here](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot2.png)
 ## Installation 
-* You can import the android project and run, or use the prebuilt Debug apk
+* You can import the android project clean and run, or use the prebuilt [Debug apk](https://github.com/Th3CracKed/MobileChallenge/blob/develop/app-debug.apk?raw=true)
  
 ## Implementation
 
@@ -23,8 +27,8 @@ I choose [MVVM Architecture](https://developer.android.com/topic/libraries/archi
 * [Data Binding](https://developer.android.com/topic/libraries/data-binding/) Help reduce boilerplate code.
 
 [RxAndroid](https://github.com/ReactiveX/RxAndroid)  composing asynchronous and event-based programs by using observable sequences.
-
-[Dagger2](https://github.com/google/dagger) improve testability and reduce boilerplate code.
+[RxNetwork](https://github.com/pwittchen/ReactiveNetwork) observe connectivity with the Internet continuously
+[Dagger2](https://github.com/google/dagger) improve testability and reduce boilerplate code (**Not implemented** :( Future Updates Maybe?)
 
 [OkHttp3](http://square.github.io/okhttp/) can use the SPDY protocol for lower latency, compression, multiplexing..., which make Android app more responsive, supports HTTP/2.
 
@@ -39,4 +43,3 @@ I choose [MVVM Architecture](https://developer.android.com/topic/libraries/archi
 The reason of choosing this solution is to have slide functionnality built in, i could use `Bottom Navigation` but i doesn't support slide.
 
 [RecyclerView](https://stackoverflow.com/questions/26728651/recyclerview-vs-listview) is a more flexible control comparing to ListView for handling "list data" that follows patterns of delegation of concerns and leaves for itself only one task - recycling items.
-
