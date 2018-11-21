@@ -8,28 +8,20 @@ import android.view.ViewGroup;
 import com.mobileChallenge.R;
 import com.mobileChallenge.databinding.RowItemBinding;
 import com.mobileChallenge.model.Item;
+import com.mobileChallenge.viewModel.ItemViewModel;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;
     private List<Item> items;
-    /**
-     * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
-     */
-    class ViewHolder extends RecyclerView.ViewHolder {
-        RowItemBinding binding;
-
-        ViewHolder(RowItemBinding itemBinding) {
-            super(itemBinding.getRoot());
-            binding = itemBinding;
-        }
-    }
 
     public void setItems(List<Item> items) {
         this.items = items;
@@ -37,20 +29,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if(layoutInflater == null){
-            layoutInflater = LayoutInflater.from(viewGroup.getContext());
+            layoutInflater = LayoutInflater.from(parent.getContext());
         }
-        RowItemBinding binding = DataBindingUtil.inflate(layoutInflater,R.layout.row_item,viewGroup,false);
-
+        ItemViewModel itemViewModel = ViewModelProviders.of((FragmentActivity) parent.getContext()).get(ItemViewModel.class);
+        RowItemBinding binding = DataBindingUtil.inflate(layoutInflater,R.layout.row_item,parent,false);
+        binding.setViewModel(itemViewModel);
         return new ViewHolder(binding);
     }
 
-    // Replace the contents of a view
+    /**
+     * Replace the contents of a view
+     */
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        viewHolder.binding.setItem(items.get(position));
-
+        viewHolder.bind(items.get(position));
         viewHolder.binding.getRoot().setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(items.get(position).getHtml_url()));
@@ -58,7 +52,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         });
     }
 
-    // Return the size of dataset
+    /**
+     * Return the size of dataSet
+      */
     @Override
     public int getItemCount() {
         return items == null ? 0 : items.size();
@@ -72,5 +68,22 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     @BindingAdapter("setAdapter")
     public static void bindRecyclerViewAdapter(RecyclerView recyclerView, RecyclerView.Adapter<?> adapter) {
         recyclerView.setAdapter(adapter);
+    }
+
+
+    /**
+     * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
+     */
+    class ViewHolder extends RecyclerView.ViewHolder {
+        RowItemBinding binding;
+
+        ViewHolder(RowItemBinding itemBinding) {
+            super(itemBinding.getRoot());
+            binding = itemBinding;
+        }
+        void bind(Item item) {
+            binding.getViewModel().setItem(item);
+            binding.executePendingBindings();
+        }
     }
 }

@@ -4,8 +4,8 @@
         xmlns:android="http://schemas.android.com/apk/res/android">
     <data>
         <variable
-            name="item"
-            type="com.mobileChallenge.model.Item" />
+            name="viewModel"
+            type="com.mobileChallenge.viewModel.ItemViewModel" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@{item.name}"
+                    android:text="@{viewModel.name}"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -69,7 +69,7 @@
                     android:layout_marginBottom="40dp"
                     android:ellipsize="end"
                     android:maxLines="2"
-                    android:text="@{item.description}"
+                    android:text="@{viewModel.description}"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,7 @@
                     android:layout_marginBottom="12dp"
                     android:layout_toStartOf="@+id/number_of_stars"
                     android:layout_toLeftOf="@+id/number_of_stars"
-                    android:text="@{item.owner.login}"
+                    android:text="@{viewModel.login}"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +119,7 @@
                     android:layout_toStartOf="@+id/repo_owner_name"
                     android:layout_toLeftOf="@+id/repo_owner_name"
                     android:contentDescription="@string/avatar"
-                    app:imageUrl="@{item.owner.avatar_url}"
+                    app:imageUrl="@{viewModel.avatar_url}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/guideline2"
                     app:layout_constraintTop_toTopOf="parent"
@@ -140,7 +140,7 @@
                     android:layout_marginEnd="8dp"
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@{item.watchers}"
+                    android:text="@{viewModel.watchers}"
                     android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
