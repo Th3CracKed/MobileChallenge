@@ -42,7 +42,6 @@ public class RFragmentObserver implements LifecycleObserver {
     private void setOnRefreshListner(){
         SwipeRefreshLayout swipeToRefresh = binding.swipeToRefresh;
         swipeToRefresh.setOnRefreshListener(() -> binding.getViewModel().requestData());
-        swipeToRefresh.setRefreshing(false);
     }
 
     /**
