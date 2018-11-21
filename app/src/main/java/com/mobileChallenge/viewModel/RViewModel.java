@@ -1,7 +1,8 @@
 package com.mobileChallenge.viewModel;
 
-import android.util.Log;
+import android.app.Application;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.mobileChallenge.model.Item;
@@ -13,10 +14,11 @@ import com.mobileChallenge.ui.adapter.RecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
 import androidx.databinding.ObservableInt;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -27,39 +29,42 @@ import io.reactivex.schedulers.Schedulers;
  * Store and manage UI-related data in a lifecycle conscious way.
  * The ViewModel class allows data to survive configuration changes such as screen rotations.
  */
-public class RViewModel extends ViewModel {
+public class RViewModel extends AndroidViewModel {
 
-    private MutableLiveData<List<Item>> mutableLiveData;
+    private MutableLiveData<List<ItemViewModel>> mutableLiveData;
     private RecyclerViewAdapter adapter;
-    private ObservableInt showRecyclerView;
-    private ObservableInt showLoading;
-    private ObservableInt showEmptyTextView;
+    private ObservableInt recyclerViewVisibility;
+    private ObservableInt loadingVisibility;
+    private ObservableInt emptyTextViewVisibility;
     private Disposable internetDisposable;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
     private Boolean isRequested = true;//to queue user request when connection is down
+    private Application application;
 
-    public RViewModel() {
-        super();
+    public RViewModel(@NonNull Application mApplication) {
+        super(mApplication);
+        application = mApplication;
         init();
     }
 
-    public LiveData<List<Item>> getMutableLiveData() {
+
+    public LiveData<List<ItemViewModel>> getMutableLiveData() {
         if (mutableLiveData == null) {
             mutableLiveData = new MutableLiveData<>();
         }
         return mutableLiveData;
     }
 
-    public ObservableInt getShowRecyclerView() {
-        return showRecyclerView;
+    public ObservableInt getRecyclerViewVisibility() {
+        return recyclerViewVisibility;
     }
 
-    public ObservableInt getShowLoading() {
-        return showLoading;
+    public ObservableInt getLoadingVisibility() {
+        return loadingVisibility;
     }
 
-    public ObservableInt getShowEmptyTextView() {
-        return showEmptyTextView;
+    public ObservableInt getEmptyTextViewVisibility() {
+        return emptyTextViewVisibility;
     }
 
     public RecyclerViewAdapter getAdapter() {
@@ -70,29 +75,30 @@ public class RViewModel extends ViewModel {
      * populate Recycler view with list items, and update ui
      * @param items to populate RecyclerView
      */
-    public void setListInAdapter(List <Item> items){
+    public void setListInAdapter(List <ItemViewModel> items){
         adapter.setItems(items);
-        showLoading.set(View.GONE);
-        showRecyclerView.set(View.VISIBLE);
+        loadingVisibility.set(View.GONE);
+        recyclerViewVisibility.set(View.VISIBLE);
+        emptyTextViewVisibility.set(View.GONE);
     }
 
     /**
      * Show message to user when no data is available
      */
     public void showEmptyText() {
-        showLoading.set(View.GONE);
-        showRecyclerView.set(View.GONE);
-        showEmptyTextView.set(View.VISIBLE);
+        loadingVisibility.set(View.GONE);
+        recyclerViewVisibility.set(View.GONE);
+        emptyTextViewVisibility.set(View.VISIBLE);
     }
 
     /*
-    * Init binding layout
+     * Init binding layout
      */
     private void init(){
         adapter = new RecyclerViewAdapter();
-        showRecyclerView = new ObservableInt(View.GONE);
-        showLoading = new ObservableInt(View.VISIBLE);
-        showEmptyTextView = new ObservableInt(View.GONE);
+        recyclerViewVisibility = new ObservableInt(View.GONE);
+        loadingVisibility = new ObservableInt(View.VISIBLE);
+        emptyTextViewVisibility = new ObservableInt(View.GONE);
     }
 
     /**
@@ -100,7 +106,7 @@ public class RViewModel extends ViewModel {
      * Listen to internet connectivity every 2 seconds (default), different from listening to network connectivity
      * Customization is possible with InternetObservingSetting
      * @see <a href="https://github.com/pwittchen/ReactiveNetwork#checking-internet-connectivity-once">ReactiveNetwork guide</a>
-     * when the device is connected and request is queued, try to fetch Data using Retrofit
+     * when the device is connected and a request is queued, try to fetch Data using Retrofit
      */
     public void onInternetAvailabilityChange() {
         internetDisposable = ReactiveNetwork
@@ -108,9 +114,10 @@ public class RViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isConnected ->{
-                    Log.d("RFragmentObserver","onInternetAvailabilityChange = "+isConnected);
                     if (isConnected && isRequested) {
                         requestData();
+                    }else if (!isConnected && (mutableLiveData.getValue()==null || mutableLiveData.getValue().isEmpty() )){//Internet is not available and list is empty
+                        showEmptyText();
                     }
                 });
     }
@@ -138,22 +145,37 @@ public class RViewModel extends ViewModel {
      * Request data from RetrofitReposClient
      * update UI onSuccess and onFailure
      * onSuccess increment requested page, and dispose request
-     * onFailure que request page
+     * onFailure queue request page
      */
-    private void requestData() {
+    public void requestData() {
         RetrofitReposClient.getInstance().fetchData(new RetrofitAction() {
             @Override
             public void onSuccess(RepositoriesModel repositoriesModel) {
                 super.onSuccess(repositoriesModel);
                 isRequested = false;//request delivered
-                mutableLiveData.setValue(repositoriesModel.getItems());
+                List <ItemViewModel> itemViewModels = new ArrayList<>();
+                for(Item item : repositoriesModel.getItems()){
+                    ItemViewModel itemViewModel = new ItemViewModel(application);
+                    itemViewModel.setItem(item);
+                    itemViewModels.add(itemViewModel);
+                }
+                if(mutableLiveData.getValue() == null) {
+                    mutableLiveData.setValue(itemViewModels);
+                }else{
+                    mutableLiveData.getValue().addAll(itemViewModels);//add new data to list
+                    mutableLiveData.setValue(mutableLiveData.getValue());//to trigger observe method
+                }
             }
 
             @Override
             public void onFailure() {
                 super.onFailure();
                 isRequested = true; //queue a request that will be launched when internet is available again
-                mutableLiveData.setValue(new ArrayList<>());
+                if (mutableLiveData.getValue()==null || mutableLiveData.getValue().isEmpty()){//list is empty
+                    showEmptyText();
+                }else{
+                    Toast.makeText(application,"Request failed",Toast.LENGTH_SHORT).show();
+                }
             }
         },compositeDisposable);
     }

@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 
 import com.mobileChallenge.R;
 import com.mobileChallenge.databinding.RowItemBinding;
-import com.mobileChallenge.model.Item;
 import com.mobileChallenge.viewModel.ItemViewModel;
 
 import java.util.List;
@@ -21,10 +20,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     private LayoutInflater layoutInflater;
-    private List<Item> items;
+    private List<ItemViewModel> items;
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<ItemViewModel> items) {
         this.items = items;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -47,7 +47,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         viewHolder.bind(items.get(position));
         viewHolder.binding.getRoot().setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(items.get(position).getHtml_url()));
+            intent.setData(Uri.parse(items.get(position).getHtml_url().get()));
             viewHolder.binding.getRoot().getContext().startActivity(intent);
         });
     }
@@ -81,8 +81,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             super(itemBinding.getRoot());
             binding = itemBinding;
         }
-        void bind(Item item) {
-            binding.getViewModel().setItem(item);
+        void bind(ItemViewModel viewModel) {
+            binding.setViewModel(viewModel);
             binding.executePendingBindings();
         }
     }

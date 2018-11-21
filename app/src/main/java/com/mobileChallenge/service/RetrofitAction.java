@@ -12,7 +12,7 @@ import java.util.List;
  */
 public abstract class RetrofitAction {
 
-    private int requestedPage = 1;//counter
+    private static int requestedPage = 1;//counter
 
     public int getRequestedPage() {
         return requestedPage;

@@ -30,11 +30,9 @@ public class ItemViewModel extends AndroidViewModel {
     private ObservableField<String> login;
     private ObservableField<String> avatar_url;
     private ObservableField<String> html_url;
-    private Context mContext;
 
     public ItemViewModel(@NonNull Application application) {
         super(application);
-        mContext = application.getApplicationContext();
         sContext = application.getApplicationContext();
     }
 

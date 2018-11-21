@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class RFragmentObserver implements LifecycleObserver {
 
@@ -29,8 +30,18 @@ public class RFragmentObserver implements LifecycleObserver {
                 binding.getViewModel().showEmptyText();
             }else{
                 binding.getViewModel().setListInAdapter(items);
+                binding.swipeToRefresh.setRefreshing(false);
             }
         });
+    }
+
+    /**
+     * Listen to user pull to request to fetch new data
+     */
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+    private void setOnRefreshListner(){
+        SwipeRefreshLayout swipeToRefresh = binding.swipeToRefresh;
+        swipeToRefresh.setOnRefreshListener(() -> binding.getViewModel().requestData());
     }
 
     /**
