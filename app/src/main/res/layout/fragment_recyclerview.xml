@@ -8,13 +8,17 @@
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeToRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="@{viewModel.recyclerViewVisibility}"
-            app:setAdapter="@{viewModel.getAdapter()}"/>
-
+            android:layout_height="wrap_content">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="@{viewModel.recyclerViewVisibility}"
+                app:setAdapter="@{viewModel.getAdapter()}"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         <androidx.core.widget.ContentLoadingProgressBar
             android:id="@+id/spinnerLoading"
             style="?android:attr/progressBarStyleLarge"

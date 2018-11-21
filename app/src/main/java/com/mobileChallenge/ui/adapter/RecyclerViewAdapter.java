@@ -24,6 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public void setItems(List<ItemViewModel> items) {
         this.items = items;
+        notifyDataSetChanged();
     }
 
     @NonNull

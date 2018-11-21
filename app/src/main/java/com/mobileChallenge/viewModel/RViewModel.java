@@ -1,8 +1,8 @@
 package com.mobileChallenge.viewModel;
 
 import android.app.Application;
-import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.mobileChallenge.model.Item;
@@ -114,7 +114,6 @@ public class RViewModel extends AndroidViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(isConnected ->{
-                    Log.d("RFragmentObserver","onInternetAvailabilityChange = "+isConnected);
                     if (isConnected && isRequested) {
                         requestData();
                     }else if (!isConnected && (mutableLiveData.getValue()==null || mutableLiveData.getValue().isEmpty() )){//Internet is not available and list is empty
@@ -148,7 +147,7 @@ public class RViewModel extends AndroidViewModel {
      * onSuccess increment requested page, and dispose request
      * onFailure queue request page
      */
-    private void requestData() {
+    public void requestData() {
         RetrofitReposClient.getInstance().fetchData(new RetrofitAction() {
             @Override
             public void onSuccess(RepositoriesModel repositoriesModel) {
@@ -160,13 +159,23 @@ public class RViewModel extends AndroidViewModel {
                     itemViewModel.setItem(item);
                     itemViewModels.add(itemViewModel);
                 }
-                mutableLiveData.setValue(itemViewModels);
+                if(mutableLiveData.getValue() == null) {
+                    mutableLiveData.setValue(itemViewModels);
+                }else{
+                    mutableLiveData.getValue().addAll(itemViewModels);//add new data to list
+                    mutableLiveData.setValue(mutableLiveData.getValue());//to trigger observe method
+                }
             }
 
             @Override
             public void onFailure() {
                 super.onFailure();
                 isRequested = true; //queue a request that will be launched when internet is available again
+                if (mutableLiveData.getValue()==null || mutableLiveData.getValue().isEmpty()){//list is empty
+                    showEmptyText();
+                }else{
+                    Toast.makeText(application,"Request failed",Toast.LENGTH_SHORT).show();
+                }
             }
         },compositeDisposable);
     }
