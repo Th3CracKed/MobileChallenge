@@ -14,10 +14,10 @@ Android application that lists the most starred Github repos that were created i
   * **Currently Pagination is not implemented, to implement the logic of it, i started with pull to refresh (because time constraint)**
   * **Internet checking : if there no Internet Available, queue a request that will be treated when internet is available**
 
-## Screenshot 
+## Screenshots
 ![Main Fragment](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot1.png)![enter image description here](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot2.png)
 ## Installation 
-* You can import the android project clean and run, or use the prebuilt [Debug apk](https://github.com/Th3CracKed/MobileChallenge/blob/develop/app-debug.apk?raw=true)
+* You can import the android project clean and run, or use the built [Debug apk](https://github.com/Th3CracKed/MobileChallenge/blob/develop/app-debug.apk?raw=true)
  
 ## Implementation
 
