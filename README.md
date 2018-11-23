@@ -11,8 +11,8 @@ Android application that lists the most starred Github repos that were created i
   * Numbers of stars for the repo. 
   * Username and avatar of the owner. 
   * [BONUS] As a User I should be able to keep scrolling and new results should appear (pagination).
-  * **Currently Pagination is not implemented, to implement the logic of it, i started with pull to refresh (because time constraint)**
-  * **Internet checking : if there no Internet Available, queue a request that will be treated when internet is available**
+  * **Currently Pagination is not implemented, to implement the busniess logic of it i started with pull to refresh (because of time constraint)**
+  * **Internet checking : if there no Internet Available, the application queue a request that will be treated when internet is available**
 
 ## Screenshots
 ![Main Fragment](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot1.png)![enter image description here](https://raw.githubusercontent.com/Th3CracKed/MobileChallenge/develop/screenshot2.png)
