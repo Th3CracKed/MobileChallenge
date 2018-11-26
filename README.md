@@ -1,5 +1,6 @@
 
 
+
 # HiddenFounders Mobile Challenge
 Android application that lists the most starred Github repos that were created in last 30 days, using Retrofit2 with MVVM architecture more details at [implementation section](#implementation).
 ## Features
@@ -27,7 +28,9 @@ I choose [MVVM Architecture](https://developer.android.com/topic/libraries/archi
 * [Data Binding](https://developer.android.com/topic/libraries/data-binding/) Help reduce boilerplate code.
 
 [RxAndroid](https://github.com/ReactiveX/RxAndroid)  composing asynchronous and event-based programs by using observable sequences.
-[RxNetwork](https://github.com/pwittchen/ReactiveNetwork) observe connectivity with the Internet continuously
+
+[RxNetwork](https://github.com/pwittchen/ReactiveNetwork) observe connectivity with the Internet continuously.
+
 [Dagger2](https://github.com/google/dagger) improve testability and reduce boilerplate code (**Not implemented** :( Future Updates Maybe?)
 
 [OkHttp3](http://square.github.io/okhttp/) can use the SPDY protocol for lower latency, compression, multiplexing..., which make Android app more responsive, supports HTTP/2.
